@@ -1,0 +1,13 @@
+<h1>Tienda de alfajores</h1>
+
+<h3>Nuestros productos:</h3>
+
+{{#each products}}
+<p>
+    Id: {{this.id}} - Nombre: {{this.title}} ({{this.code}})<br />
+    Descripción: {{this.description}}<br />
+    Precio: {{this.price}}<br />
+    Stock: {{this.stock}}<br />
+    Categoría: {{this.category}}<br />
+</p> 
+{{/each}}
