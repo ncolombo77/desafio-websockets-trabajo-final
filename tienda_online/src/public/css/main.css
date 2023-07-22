@@ -1,0 +1,14 @@
+* {
+    font-family: Arial;
+}
+
+.newProduct {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.productProperty {
+    display: flex;
+    flex-direction: column;
+}

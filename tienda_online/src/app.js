@@ -3,6 +3,7 @@ import { engine } from "express-handlebars";
 import { __dirname } from "./utils.js";
 import path from 'path';
 import { Server } from "socket.io";
+import { ProductManager } from "./dao/productManager.js";
 
 import { viewsRouter } from "./routes/views.routes.js";
 import { productsRouter } from "./routes/products.routes.js";
@@ -26,12 +27,29 @@ app.set('views', path.join(__dirname, '/views'));
 const socketServer = new Server(httpServer);
 
 
-socketServer.on("connection", (socketConnected) => {
-    console.log(`Nuevo cliente conectado (id: ${ socketConnected.id } ).`);
-});
-
-
 app.use(viewsRouter);
 
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
+
+socketServer.on("connection", (socketConnected) => {
+    console.log(`Nuevo cliente conectado (id: ${ socketConnected.id } ).`);
+
+    socketConnected.on("newProduct", async (data) => {
+        try {
+            const productService = new ProductManager('products.json');
+
+            const products = await productService.get();
+
+            const productCreated = await productService.save(data);
+
+            products.push(productCreated);
+
+            socketServer.emit("productsUpdate", products);
+        }
+        catch (error) {
+            console.log("Error: ", error.message);
+        }
+
+    })
+});
